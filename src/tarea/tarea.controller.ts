@@ -1,42 +1,58 @@
 import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Param,
-    Put,
-    Delete,
-  } from '@nestjs/common';
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  NotFoundException,
+} from '@nestjs/common';
 import { TareaService } from './tarea.service';
-import { Tarea } from './tarea.entity';
 import { CreateTareaDto } from './dto/create-tarea.dto';
+import { UpdateTareaDto } from './dto/update-tarea.dto';
+import { Tarea } from './tarea.entity';
 
 @Controller('tarea')
 export class TareaController {
-    constructor(private readonly tareaService: TareaService) {}
+  constructor(private tareaService: TareaService) {}
 
-    @Post()
-    async create(@Body() createTareaDto: CreateTareaDto): Promise<Tarea> {
-        return this.tareaService.create(createTareaDto);
-    }
-    
-    @Get()
-    async findAll(): Promise<Tarea[]> {
-        return this.tareaService.findAll();
-    }
+  @Post()
+  create(@Body() dto: CreateTareaDto): Promise<Tarea> {
+    return this.tareaService.create(dto);
+  }
 
-    @Get(':id')
-    async findOne(@Param('id') id: string): Promise<Tarea> {
-        return this.tareaService.findOne(+id);
-    }
+  @Get()
+  findAll(): Promise<Tarea[]> {
+    return this.tareaService.findAll();
+  }
 
-    @Put(':id')
-    async update(@Param('id') id: string, @Body() updateTareaDto: CreateTareaDto): Promise<Tarea> {
-        return this.tareaService.update(+id, updateTareaDto);
-    }
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<Tarea> {
+    return this.tareaService.findOne(+id);
+  }
 
-    @Delete(':id')
-    async remove(@Param('id') id: string): Promise<void> {
-        return this.tareaService.remove(+id);
-    }
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateTareaDto,
+  ): Promise<Tarea> {
+    return this.tareaService.update(+id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string): Promise<void> {
+    return this.tareaService.remove(+id);
+  }
+
+  @Get('titulo/:title')
+async getTareasByTitle(@Param('title') title: string) {
+  const tareas = await this.tareaService.findByTitle(title);
+  if (!tareas || tareas.length === 0) {
+    throw new NotFoundException(`Tarea con el título ${title} no encontrada`);
+  }
+  return tareas;
+}
+
+
 }

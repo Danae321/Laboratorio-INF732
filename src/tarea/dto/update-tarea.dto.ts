@@ -15,5 +15,4 @@ export class UpdateTareaDto {
     @IsNotEmpty({ message: 'El estado de completado es requerido' })
     @IsOptional()
     completed?: boolean;
-
 }

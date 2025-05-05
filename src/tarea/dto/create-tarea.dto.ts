@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTareaDto {
     @IsString()
@@ -8,5 +8,4 @@ export class CreateTareaDto {
     @IsString()
     @IsNotEmpty({ message: 'The content is required' })
     content: string;
-
 }
